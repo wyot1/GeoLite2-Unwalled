@@ -28,7 +28,9 @@ create_lists() {
     while read -r path; do
       case "${1}" in
         "GHRAW")
-          BASE_URL="https://github.com/wyot1/GeoLite2-Unwalled/raw/downloads/"
+          # allegedly better regarding rate limiting (it redirects there anyway)
+          # BASE_URL="https://github.com/wyot1/GeoLite2-Unwalled/raw/downloads/"
+          BASE_URL="https://raw.githubusercontent.com/wyot1/GeoLite2-Unwalled/downloads/"
           ;;
         "POTENTIAL_CDN")
           BASE_URL="https://cdn.unnamed"
