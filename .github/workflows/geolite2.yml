@@ -1,0 +1,47 @@
+name: geolite2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 20 * * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-22.04
+    container:
+      image: debian:12
+    permissions:
+      contents: write
+      actions: write
+    timeout-minutes: 60
+    steps:
+      - name: set up some GITHUB_ENV
+        run: |
+          echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}" >> ${GITHUB_ENV}
+          echo "USER_NAME=${{ github.actor }}" >> ${GITHUB_ENV}
+          echo "TAG_NAME=$(date +"%Y-%m-%d_%H-%M-%S")" >> ${GITHUB_ENV}
+          echo "MM_KEY=${{ secrets.MM_KEY }}" >> ${GITHUB_ENV}
+
+      - name: run script
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo " # Installing basic deps"
+          >/dev/null apt-get -yqq update &&  >/dev/null apt-get -yqq upgrade
+          >/dev/null apt-get -yqq install git curl
+          mkdir -p /root/.ssh
+          echo " # adding private ssh key"
+          eval "$(ssh-agent -s)"
+          echo "${{ secrets.PRIVATE_DEPLOY_KEY }}" > /root/.ssh/PRIVATE_DEPLOY_KEY
+          chmod 0400 /root/.ssh/PRIVATE_DEPLOY_KEY ; ssh-add /root/.ssh/PRIVATE_DEPLOY_KEY
+          echo " # scanning github to avoid the question"
+          ssh-keyscan github.com >> /root/.ssh/known_hosts
+          echo " # shallow clone of master"
+          git clone "git@github.com:${{ github.repository }}.git" --depth=1 --branch master --single-branch master
+          echo " # clone time"
+          git clone "git@github.com:${{ github.repository }}.git" --depth=1 --branch time --single-branch time || git init time
+          echo " # running the target script"
+          bash ./master/run.sh
+
