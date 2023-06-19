@@ -90,7 +90,7 @@ Until the article is published, here's a minimal example:
 
 ```bash
 curl -L \
-  "https://github.com/wyot1/GeoLite2-Unwalled/raw/downloads/LIST/GHRAW/master-CITY_MMDB.lst" \
+  "https://raw.githubusercontent.com/wyot1/GeoLite2-Unwalled/downloads/LIST/GHRAW/master-CITY_MMDB.lst" \
   | xargs -n1 curl -LOJ
 cat GeoLite2-City.mmdb.?? > GeoLite2-City.mmdb
 ls -lh
