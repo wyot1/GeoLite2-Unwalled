@@ -73,8 +73,8 @@ if (( current==0 )); then
   >/dev/null apt-get -yqq update
   >/dev/null apt-get -yqq install curl gh unzip zstd
   
-  tmp=" # Processing the files. This includes random delays to make correlation \
-  too annoying."
+  tmp=" # Processing the files. This includes random delays to make correlation "
+  tmp+="too annoying."
   >&2 echo "${tmp}"
   bash master/process_geolite2.sh
 fi
