@@ -103,7 +103,8 @@ ls -lh
 ```
 
 Now you can script this to scale in your workflow, handle single files, 
-split files, varying numbers. Simple and reliable.
+split files, varying numbers. Simple and reliable. See `get_DBs.sh` for
+a more complete implementation.
 
 ## Screenshot of Member Area
 
